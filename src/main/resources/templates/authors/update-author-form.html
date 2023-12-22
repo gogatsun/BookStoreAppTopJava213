@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Изменение автора</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+<header th:replace="~{layout/fragment-header.html :: header-fragment(page='authors')}"></header>
+
+    <div class="container-fluid text-center content">
+
+        <div class="container col-sm-9">
+            <div class="mb-3 row"></div>
+            <figure class="text-center">
+                <blockquote class="blockquote">
+                    <p>Пиши пьяным, редактируй трезвым.</p>
+                </blockquote>
+                <figcaption class="blockquote-footer">
+                    <cite title="Source Title">Эрнест Хемингуэй</cite>
+                </figcaption>
+            </figure>
+        </div>
+
+        <div class="container-sm col-sm-9">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a th:href="@{/}">Главная</a></li>
+                    <li class="breadcrumb-item" aria-current="page"><a th:href="@{/authors}">Авторы</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Редактирование</li>
+                </ol>
+            </nav>
+        </div>
+
+
+        <div class="container-md col-sm-9">
+            <form method="post" th:action="@{/authors/update-author}" th:object="${author}">
+
+                <div hidden="hidden">
+                    <label for="id"></label>
+                    <input class="form-control" type="number" id="id" th:field="*{id}" />
+                </div>
+
+                <div class="mb-3 row">
+                    <label class="col-sm-2 col-form-label text-end" for="surname">
+                        Фамилия:
+                    </label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="surname" th:field="*{surname}"/>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label class="col-sm-2 col-form-label text-end" for="name">
+                        Имя:
+                    </label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="name" th:field="*{name}"/>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label class="col-sm-2 col-form-label text-end" for="patronymic">
+                        Отчество:
+                    </label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="patronymic" th:field="*{patronymic}"/>
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <div class="col-sm-2"></div>
+                    <div class="col-sm-5">
+                        <button class="btn btn-success form-control">Изменить</button>
+                    </div>
+                    <div class="col-sm-5">
+                        <a class="btn btn-danger form-control" th:href="@{/authors}">Отменить</a>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+<th:block th:replace="~{layout/fragment-footer.html :: footer-fragment}"></th:block>
+</body>
+</html>

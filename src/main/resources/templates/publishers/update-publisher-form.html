@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Изменение</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<header th:replace="~{layout/fragment-header.html :: header-fragment(page='publishers')}"></header>
+
+    <div class="container-fluid text-center content">
+
+        <div class="container col-sm-9">
+            <div class="mb-3 row"></div>
+            <figure class="text-center">
+                <blockquote class="blockquote">
+                    <p>Большая часть издателей — неудавшиеся писатели, как и большая часть писателей.</p>
+                </blockquote>
+                <figcaption class="blockquote-footer">
+                    <cite title="Source Title">Томас Стернз Элиот</cite>
+                </figcaption>
+            </figure>
+        </div>
+
+        <div class="container-sm col-sm-9">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a th:href="@{/}">Главная</a></li>
+                    <li class="breadcrumb-item" aria-current="page"><a th:href="@{/series}">Издательства</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Редактирование</li>
+                </ol>
+            </nav>
+        </div>
+
+        <div class="container-md col-sm-9">
+            <form method="post" th:action="@{/publishers/update-publisher}" th:object="${publisher}">
+
+                <div hidden="hidden">
+                    <label for="id"></label>
+                    <input class="form-control" type="number" id="id" th:field="*{id}" />
+                </div>
+
+                <div class="mb-3 row">
+                    <label class="col-sm-2 col-form-label text-end" for="title">
+                        Наименование:
+                    </label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="title" type="text" maxlength="255"
+                               th:field="*{title}"/>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label class="col-sm-2 col-form-label text-end" for="description">
+                        Описание:
+                    </label>
+                    <div class="col-sm-10">
+                        <textarea class="form-control" th:field="*{description}" id="description" rows="3" required></textarea>
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <div class="col-sm-2"></div>
+                    <div class="col-sm-5">
+                        <button class="btn btn-success form-control">Изменить</button>
+                    </div>
+                    <div class="col-sm-5">
+                        <a class="btn btn-danger form-control" th:href="@{/publishers}">Отменить</a>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+<th:block th:replace="~{layout/fragment-footer.html :: footer-fragment}"></th:block>
+</body>
+</html>

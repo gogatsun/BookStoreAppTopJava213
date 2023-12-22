@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Книжные циклы</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+    <header th:replace="~{layout/fragment-header.html :: header-fragment(page='series')}"></header>
+
+    <div class="container-fluid content">
+
+        <div class="container col-sm-9">
+            <div class="mb-3 row"></div>
+            <figure class="text-center">
+                <blockquote class="blockquote">
+                    <p>Наша жизнь — это колесо, которое постоянно вращается, <br>
+                        и каждый раз мы находимся в новой точке на этом круге.</p>
+                </blockquote>
+                <figcaption class="blockquote-footer">
+                    <cite title="Source Title">Джордж Элиот</cite>
+                </figcaption>
+            </figure>
+        </div>
+
+        <th:block th:replace="~{layout/fragment-message.html :: ft-message}"></th:block>
+
+        <div class="container-sm col-sm-9">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a th:href="@{/}">Главная</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Книжные циклы</li>
+                </ol>
+            </nav>
+        </div>
+
+        <div sec:authorize="hasRole('ADMIN')" class="container-sm col-sm-9">
+            <div class="row border-bottom">
+                <div class="col-sm-9 my-auto"></div>
+                <div class="text-start col-sm-3">
+                    <p>
+                        <a class="btn btn-success form-control" th:href="@{/series/new-series}">Добавить цикл</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-md col-sm-9">
+            <ul class="list-group list-group-flush border-bottom" th:each="cycle: ${series}">
+                <li class="list-group-item d-flex justify-content-between align-items-start">
+                    <div class="ms-2 col-sm-9 my-auto">
+                        <div class="fw-bold">
+                            <p>
+                                <a th:href="@{'/series/' + ${cycle.id}}">
+                                    [[${cycle.title}]]
+                                </a>
+                            </p>
+                        </div>
+                        <p>[[${cycle.description}]]</p>
+                    </div>
+                    <div class="text-end col-sm-3 my-auto">
+                        <a th:href="@{'/series/' + ${cycle.id}}"
+                           class="btn btn-outline-primary">Книги</a>
+                        <a sec:authorize="hasRole('ADMIN')" th:href="@{'/series/update-series/' + ${cycle.id}}"
+                        class="btn btn-primary">Изменить</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+    <th:block th:replace="~{layout/fragment-footer.html :: footer-fragment}"></th:block>
+</body>
+</html>

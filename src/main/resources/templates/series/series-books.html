@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Книжные циклы</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+<header th:replace="~{layout/fragment-header.html :: header-fragment(page='series')}"></header>
+
+    <div class="container-fluid content">
+
+        <div class="container col-sm-9">
+            <div class="mb-3 row"></div>
+            <figure class="text-center">
+                <blockquote class="blockquote">
+                    <p>Наша жизнь — это колесо, которое постоянно вращается, <br>
+                        и каждый раз мы находимся в новой точке на этом круге.</p>
+                </blockquote>
+                <figcaption class="blockquote-footer">
+                    <cite title="Source Title">Джордж Элиот</cite>
+                </figcaption>
+            </figure>
+        </div>
+
+        <th:block th:replace="~{layout/fragment-message.html :: ft-message}"></th:block>
+
+        <div class="container-sm col-sm-9">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a th:href="@{/}">Главная</a></li>
+                    <li class="breadcrumb-item" aria-current="page"><a th:href="@{/series}">Книжные циклы</a></li>
+                    <li class="breadcrumb-item active" aria-current="page"
+                    th:text="${series.title}">Цикл</li>
+                </ol>
+            </nav>
+        </div>
+
+        <div class="container-sm col-sm-9 py-2">
+            <h5 class="card-title py-2" th:text="${series.title}">Title</h5>
+            <p class="card-text py-2" th:text="${series.description}">Description</p>
+            <div class="row">
+                <div th:if="${!books.isEmpty()}" th:each="book: ${books}" class="col-auto mb-4 ">
+                    <div class="card" style="width: 15rem; height: 30rem;">
+
+                        <div class="my-auto pe-3 ps-3 pt-3" th:if="${book.bookImageData != null}">
+                            <img th:src="@{'data:image/jpeg;base64,' + ${book.bookImageData}}"
+                                 class="card-img-top rounded" height="330px" alt="...">
+                        </div>
+                        <div class="my-auto pe-3 ps-3 pt-3" th:if="${book.bookImageData == null}">
+                            <img th:src="@{/img/defaultImage.jpg}"
+                                 class="card-img-top rounded" height="330px" alt="...">
+                        </div>
+
+                        <div class="card-body">
+                            <p class="card-title h6 text-start">
+                                <a style="max-width: 200px;" class="text-decoration-none text-dark d-inline-block text-truncate"
+                                   th:href="@{'/books/book-details/' + ${book.id}}">
+                                    [[${book.title}]]
+                                </a>
+                            </p>
+                            <p class="card-title text-end">
+                                <span class="col-sm-10 " th:each="bookAuthor: ${book.getBookAuthorSet()}">
+                                    [[${bookAuthor.author.name.charAt(0) + '. ' + bookAuthor.author.surname}]]
+                                </span>
+                            </p>
+                            <div class="row">
+                                <div class="col my-auto">
+                                    <h5 th:text="*{book.price + ' &#8381;'}" class="card-title text-center text-primary text-end"></h5>
+                                </div>
+                                <div class="col">
+                                    <p sec:authorize="hasRole('USER')" class="text-end my-auto">
+                                        <a th:href="@{'/order/buy/' + ${book.id}}"
+                                           class="btn btn-primary">Купить</a>
+                                    </p>
+                                    <p sec:authorize="isAnonymous()" class="text-end my-auto">
+                                        <a th:href="@{/login}" class="btn btn-primary">Купить</a>
+                                    </p>
+                                    <p sec:authorize="hasRole('ADMIN')" class="text-end my-auto">
+                                        <a href="#" class="btn btn-primary disabled">Купить</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <th:block th:replace="~{layout/fragment-footer.html :: footer-fragment}"></th:block>
+</body>
+</html>

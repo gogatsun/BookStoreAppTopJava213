@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Корзина</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<header th:replace="~{layout/fragment-header.html :: header-fragment}"></header>
+
+<div class="container-fluid content">
+
+    <th:block th:replace="~{layout/fragment-message.html :: ft-message}"></th:block>
+
+    <div class="container-sm col-sm-9">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/}">Главная</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Корзина</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="container-sm col-sm-9 justify-content-center my-4">
+
+
+        <div class="row justify-content-between">
+
+            <div th:if="${orderProductNull}">
+                <p class="card-title h5 mt-2 ms-4 mb-4">Корзина пуста...</p>
+            </div>
+
+            <div class="col-sm-9">
+                <div th:if="${!orderProductNull}" class="container card mb-3 py-3"
+                     th:object="${notCompletedOrder}">
+                    <div class="row">
+                        <div class="container ms-4">
+                            <p class="card-title h5 py-1" th:text="${'Заказ №' + notCompletedOrder.id}">Текущий заказ:</p>
+                        </div>
+
+                        <div class="mb-3" th:each="orderBook : ${notCompletedOrder.orderBookSet}">
+                            <div class="row g-0">
+                                <div class="col-md-2"  th:if="${orderBook.book.bookImageData != null}">
+                                    <img th:src="@{'data:image/jpeg;base64,' + ${orderBook.book.bookImageData}}"
+                                         class="img-fluid rounded-start" height="100px" alt="...">
+                                </div>
+                                <div class="col-md-2" th:if="${orderBook.book.bookImageData == null}">
+                                    <img th:src="@{/img/defaultImage.jpg}"
+                                         class="img-fluid rounded-start" height="100px" alt="...">
+                                </div>
+                                <div class="col-md-10">
+                                    <div class="card-body">
+                                        <p class="card-title">
+                                            <a class="text-decoration-none text-dark h5" th:href="@{'books/book-details/' + ${orderBook.book.id}}"
+                                               th:text="${orderBook.book.title}">Название</a>
+                                        </p>
+                                        <span class="card-text" th:each="author: ${orderBook.book.bookAuthorSet}"
+                                           th:text="${author.author.name.charAt(0) + '. ' + author.author.surname + ' '}">
+                                            Автор
+                                        </span>
+                                        <div class="row">
+                                            <div class="col-9 my-auto">
+                                                <p class="card-text text-center h5" th:text="${orderBook.book.price + ' &#8381;'}">
+                                                    Цена</p>
+                                            </div>
+                                            <div class="col-1 my-auto">
+                                                <a th:href="@{'/order/delete-item/' + ${orderBook.id}}"
+                                                   class="col btn btn-outline-dark btn-circle">-</a>
+                                            </div>
+                                            <div class="col-1 my-auto">
+                                                <span class="col btn" th:text="${orderBook.quantity}">Количество</span>
+                                            </div>
+                                            <div class="col-1 my-auto">
+                                                <a th:href="@{'/order/add-item/' + ${orderBook.id}}"
+                                                   class="col btn btn-outline-dark btn-circle">+</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-3" th:if="${!orderProductNull}">
+                <div class="card">
+                    <div class="card-body">
+                        <p class="small py-0">
+                            <a class="py-3 text-dark text-decoration-none" href="#">Доставка курьером, 220 &#8381;</a>
+                            <br>
+                            <a class="py-3 text-dark text-decoration-none" href="#">В магазины сети, Бесплатно</a>
+                            <br>
+                            <a class="py-3 text-dark text-decoration-none" href="#">В пункты выдачи, 140 &#8381;</a>
+                        </p>
+                        <div class="row my-4">
+                            <div class="col my-auto">
+                                <p th:text="${totalPrice + ' &#8381;'}"
+                                   class="card-title h5 text-center text-primary text-end"></p>
+                            </div>
+                            <div class="col">
+                                <p sec:authorize="hasRole('USER')" class="text-end my-auto">
+                                    <a th:href="@{'/order/complete/' + ${notCompletedOrder.id}}"
+                                       class="btn btn-success">Оформить</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="container card mb-3 py-3" th:object="${completedOrders}">
+                    <div class="row g-0">
+                        <div class="container py-1">
+                            <p class="card-title h5">История заказов:</p>
+                        </div>
+
+                        <div class="row mb-3" th:each="order : ${completedOrders}">
+                            <div class="col-sm-4">
+                                <a class="card-text text-decoration-none text-dark" th:text="${'Заказ №' + order.id}">
+                                    Номер заказа</a>
+                            </div>
+                            <div class="col-sm-8">
+                                <p class="card-text" th:text="${order.createdAt}">Дата создания</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<th:block th:replace="~{layout/fragment-footer.html :: footer-fragment}"></th:block>
+</body>
+</html>

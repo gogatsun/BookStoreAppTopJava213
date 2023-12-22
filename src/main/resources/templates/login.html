@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Вход</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+
+    <header th:replace="~{layout/fragment-header.html :: header-fragment}"></header>
+
+    <div class="container-fluid w-25 content">
+        <div class="my-4 py-4"></div>
+
+        <th:block th:replace="~{layout/fragment-message.html :: ft-message}"></th:block>
+
+        <p class="h5 py-3 text-center">Вход</p>
+        <form method="post" th:action="@{/login}">
+            <div class="input-group flex-nowrap mb-3">
+                <input type="email" class="form-control" id="username" name="username"
+                       placeholder="Почта" aria-label="username" required>
+            </div>
+            <div class="input-group flex-nowrap mb-3">
+                <input type="password" class="form-control" id="password" name="password"
+                       aria-label="password"
+                       placeholder="Пароль" required>
+            </div>
+            <div class="row">
+                <div class="col my-auto">
+                    <a th:href="@{/registration}">Зарегистрироваться</a>
+                </div>
+                <div class="text-end col">
+                    <button type="submit" class="btn btn-primary">Войти</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+
+    <th:block th:replace="~{layout/fragment-footer.html :: footer-fragment}"></th:block>
+
+</body>
+</html>

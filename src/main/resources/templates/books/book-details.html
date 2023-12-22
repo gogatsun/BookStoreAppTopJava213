@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Описание</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<header th:replace="~{layout/fragment-header.html :: header-fragment(page='books')}"></header>
+
+<div class="container-fluid content">
+
+    <div class="container col-sm-9">
+        <div class="mb-3 row"></div>
+        <figure class="text-center">
+            <blockquote class="blockquote">
+                <p>Книга — великая вещь, пока человек умеет ею пользоваться.</p>
+            </blockquote>
+            <figcaption class="blockquote-footer">
+                <cite title="Source Title">Александр Блок</cite>
+            </figcaption>
+        </figure>
+    </div>
+
+    <th:block th:replace="~{layout/fragment-message.html :: ft-message}"></th:block>
+
+    <div class="container-sm col-sm-9">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/}">Главная</a></li>
+                <li class="breadcrumb-item" aria-current="page"><a th:href="@{/books}">Книги</a></li>
+                <li class="breadcrumb-item active" aria-current="page" th:object="${book}" th:text="*{title}"></li>
+            </ol>
+        </nav>
+    </div>
+
+
+    <div class="container-sm col-sm-9 justify-content-center my-4">
+        <div class="row justify-content-between">
+            <div class="col-9">
+                <div class="container card mb-3" th:object="${book}">
+                    <div class="row g-0">
+                        <div class="col-md-4 my-auto p-2">
+                            <div th:if="${book.bookImageData != null}">
+                                <img th:src="@{'data:image/jpeg;base64,' + ${book.bookImageData}}"
+                                     class="img-fluid rounded" alt="...">
+                            </div>
+                            <div th:if="${book.bookImageData == null}">
+                                <img th:src="@{/img/defaultImage.jpg}"
+                                     class="img-fluid rounded" alt="...">
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <div>
+                                    <div class="py-3">
+                                        <p class="card-title h5" th:text="*{title}">
+                                        </p>
+                                        <p class="card-title">
+                                            <a class="text-decoration-none text-dark"
+                                               th:each="bookAuthor: ${book.bookAuthorSet}"
+                                               th:text="${bookAuthor.author.surname + ' '
+                                               + bookAuthor.author.name + ' ' + bookAuthor.author.patronymic + ' '}"
+                                               th:href="@{'/authors/author-books/' + ${bookAuthor.author.id}}"></a>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="row">
+                                        <p class="col-5 small py-1 my-0">ID товара</p>
+                                        <p class="col-5 small py-1 my-0" th:text="${book.id}"></p>
+                                    </div>
+                                    <div class="row">
+                                        <p class="col-5 small py-1 my-0">Издательство</p>
+                                        <p class="col-5 small py-1 my-0">
+                                            <a th:href="@{'/publishers/' + ${book.publisher.id}}"
+                                               th:text="${book.publisher.title}"></a>
+                                        </p>
+                                    </div>
+                                    <div class="row">
+                                        <p class="col-5 small py-1 my-0">ISBN</p>
+                                        <p class="col-5 small py-1 my-0" th:text="${book.isbn}"></p>
+                                    </div>
+                                    <div th:if="${book.series != null}" class="row">
+                                        <p class="col-5 small py-1 my-0">Серия</p>
+                                        <p class="col-5 small py-1 my-0">
+                                            <a th:href="@{'/series/' + ${book.series.id}}" th:text="${book.series.title}"></a>
+                                        </p>
+                                    </div>
+                                    <div class="row" th:if="${book.publicationDate != null}">
+                                        <p class="col-5 small py-1 my-0">Год издания</p>
+                                        <p class="col-5 small py-1 my-0" th:text="${book.publicationDate}"></p>
+                                    </div>
+                                    <div class="row" th:if="${book.pageCount != null}">
+                                        <p class="col-5 small py-1 my-0">Количество страниц</p>
+                                        <p class="col-5 small py-1 my-0" th:text="${book.pageCount}"></p>
+                                    </div>
+                                    <div class="row">
+                                        <p class="col-5 small py-1 my-0">Тип обложки</p>
+                                        <p class="col-5 small py-1 my-0" th:text="${book.coverType}"></p>
+                                    </div>
+                                    <div class="row" th:if="${book.edition != null}">
+                                        <p class="col-5 small py-1 my-0">Тираж</p>
+                                        <p class="col-5 small py-1 my-0" th:text="${book.edition}"></p>
+                                    </div>
+                                    <div class="row" th:if="${book.weight != null}">
+                                        <p class="col-5 small py-1 my-0">Вес, г</p>
+                                        <p class="col-5 small py-1 my-0" th:text="${book.weight}"></p>
+                                    </div>
+                                    <div class="row">
+                                        <p class="col-5 small py-1 my-0">Возрастные ограничения</p>
+                                        <p class="col-5 small py-1 my-0" th:text="${book.ageLimit}"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container py-4">
+                            <p class="card-text" th:text="*{description}"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="card"  th:object="${book}">
+                    <div class="card-body">
+                        <p class="card-text text-success text-end" th:if="${book.quantity &gt; 0}">В наличии</p>
+                        <p class="card-text text-danger text-end" th:if="${book.quantity == 0}">Отсутствует на складе</p>
+                        <p class="small py-0">
+                            <span class="py-3">Доставка курьером, 220 &#8381;</span>
+                            <br>
+                            <span class="py-3">В магазины сети, Бесплатно</span>
+                            <br>
+                            <span class="py-3">В пункты выдачи, 140 &#8381;</span>
+                        </p>
+                        <div class="row my-4">
+                            <div class="col my-auto">
+                                <p th:text="*{price + ' &#8381;'}" class="card-title h4 text-center text-primary text-end"></p>
+                            </div>
+                            <div class="col">
+                                <p sec:authorize="hasRole('USER')" class="text-end my-auto">
+                                    <a th:href="@{'/order/buy/' + ${book.id}}"
+                                       class="btn btn-primary">Купить</a>
+                                </p>
+                                <p sec:authorize="isAnonymous()" class="text-end my-auto">
+                                    <a th:href="@{/login}" class="btn btn-primary">Купить</a>
+                                </p>
+                                <p sec:authorize="hasRole('ADMIN')" class="text-end my-auto">
+                                    <a href="#" class="btn btn-primary disabled">Купить</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${!book.bookGenreSet.isEmpty()}" class="card mt-4" th:object="${book}">
+                    <div class="card-body">
+                        <p>Жанры:</p>
+                        <p class="badge h6 bg-success rounded-pill" th:each="genre : ${book.bookGenreSet}"
+                           th:text="${genre.genre.title}">
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <th:block th:replace="~{layout/fragment-footer.html :: footer-fragment}"></th:block>
+</body>
+</html>

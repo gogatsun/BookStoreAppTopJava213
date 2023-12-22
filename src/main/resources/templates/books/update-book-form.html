@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Редактирование книги</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<header th:replace="~{layout/fragment-header.html :: header-fragment(page='books')}"></header>
+
+    <div class="container-fluid text-center content">
+
+        <div class="container col-sm-9">
+            <div class="mb-3 row"></div>
+            <figure class="text-center">
+                <blockquote class="blockquote">
+                    <p>Книга — великая вещь, пока человек умеет ею пользоваться.</p>
+                </blockquote>
+                <figcaption class="blockquote-footer">
+                    <cite title="Source Title">Александр Блок</cite>
+                </figcaption>
+            </figure>
+        </div>
+
+
+        <div class="container-sm col-sm-9">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a th:href="@{/}">Главная</a></li>
+                    <li class="breadcrumb-item" aria-current="page"><a th:href="@{/books}">Книги</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Изменение</li>
+                </ol>
+            </nav>
+        </div>
+
+        <div class="container-md col-sm-9">
+            <form method="post" th:action="@{/books/update-book}" th:object="${updateBook}"
+                  enctype="multipart/form-data">
+
+                <div hidden="hidden">
+                    <label for="id"></label>
+                    <input class="form-control" type="number" id="id" th:field="*{id}" />
+                </div>
+
+                <div class="mb-3 row">
+                    <label class="col-sm-2 col-form-label text-end" for="title">
+                        Название:
+                    </label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="title" type="text" maxlength="150"
+                               th:field="*{title}" required/>
+                    </div>
+                </div>
+
+                <th:block th:replace="~{layout/fragment-message.html :: ft-message}"></th:block>
+
+                <div class="mb-3 row">
+                    <label class="col-sm-2 col-form-label text-end">
+                        Автор(ы):
+                    </label>
+                    <div class="col-sm-10">
+                        <span class="form-control text-start" th:each="bookAuthor: ${updateBook.getBookAuthorSet()}"
+                           th:text="${bookAuthor.author.name.charAt(0) + '. ' + bookAuthor.author.surname}">
+                        </span>
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label class="col-sm-2 col-form-label text-end" for="bookImage">
+                        Обложка:
+                    </label>
+                    <div th:field="*{bookImageData}" hidden>
+                        <img th:src="@{'data:image/jpeg;base64,' + ${updateBook.bookImageData}}" alt="...">
+                    </div>
+                    <div class="col-sm-10">
+                        <input class="form-control" type="file" name="bookImage" id="bookImage"/>
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label class="col-sm-2 col-form-label text-end" for="publisher">
+                        Издательство:
+                    </label>
+                    <div class="col-sm-10">
+                        <select required class="form-select" id="publisher" th:field="*{publisher}">
+                            <option th:each="publisher: ${publishers}" th:value="${publisher.id}"
+                                     th:selected="${updateBook.publisher.id == publisher.id}">
+                                [[${publisher.title}]]
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label class="col-sm-2 col-form-label text-end" for="series">
+                        Цикл:
+                    </label>
+                    <div class="col-sm-10">
+                        <select class="form-select" id="series" th:field="*{series}">
+                            <option th:selected="${updateBook.series == null}" value="">Выберите цикл</option>
+                            <option th:if="${updateBook.series == null}"
+                                    th:each="cycle: ${series}"
+                                    th:value="${cycle.id}">
+                                [[${cycle.title}]]
+                            </option>
+                            <option th:if="${updateBook.series != null}"
+                                    th:each="cycle: ${series}"
+                                    th:value="${cycle.id}"
+                                    th:selected="${updateBook.series.id == cycle.id}">
+                                [[${cycle.title}]]
+                            </option>
+
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label class="col-sm-2 col-form-label text-end" for="price">
+                        Цена:
+                    </label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="price" type="number" min="0" step="0.01"
+                               th:field="*{price}" required/>
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label class="col-sm-2 col-form-label text-end" for="publicationDate">
+                        Год издания:
+                    </label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="publicationDate" type="number"
+                               min="1900" max="2099" step="1" value="2023"
+                               th:field="*{publicationDate}"/>
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label class="col-sm-2 col-form-label text-end" for="description">
+                        Описание:
+                    </label>
+                    <div class="col-sm-10">
+                        <textarea class="form-control" rows="4" th:field="*{description}"
+                                  id="description" required></textarea>
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label class="col-sm-2 col-form-label text-end" for="isbn">
+                        ISBN:
+                    </label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="isbn" type="number"
+                               min="10"
+                               th:field="*{isbn}" required/>
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label class="col-sm-2 col-form-label text-end" for="pageCount">
+                        Количество страниц:
+                    </label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="pageCount" type="number" min="1"
+                               th:field="*{pageCount}"/>
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label class="col-sm-2 col-form-label text-end" for="coverType">
+                        Тип обложки:
+                    </label>
+                    <div class="col-sm-10">
+                        <select required class="form-select" id="coverType" th:field="*{coverType}">
+                            <option th:each="coverType: ${coverTypes}" th:value="${coverType.id}"
+                                    th:selected="${updateBook.coverType.id == coverType.id}">
+                                [[${coverType.title}]]
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label class="col-sm-2 col-form-label text-end" for="edition">
+                        Тираж:
+                    </label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="edition" type="number" min="1"
+                               th:field="*{edition}" required/>
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label class="col-sm-2 col-form-label text-end" for="weight">
+                        Вес, г.:
+                    </label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="weight" type="number" min="1"
+                               th:field="*{weight}" required/>
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label class="col-sm-2 col-form-label text-end" for="ageLimit">
+                        Возрастное ограничение:
+                    </label>
+                    <div class="col-sm-10">
+                        <select required class="form-select" id="ageLimit" name="ageLimit">
+                            <option th:each="ageLimit: ${ageLimits}" th:value="${ageLimit.id}"
+                                    th:selected="${updateBook.ageLimit.id == ageLimit.id}">
+                                [[${ageLimit.title}]]
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label class="col-sm-2 col-form-label text-end" for="quantity">
+                        Количество на складе:
+                    </label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="quantity" type="number" min="0"
+                               th:field="*{quantity}" required/>
+                    </div>
+                </div>
+
+
+                <div class="mb-3 row">
+                    <div class="col-sm-2"></div>
+                    <div class="col-sm-5">
+                        <button class="btn btn-success form-control">Сохранить</button>
+                    </div>
+                    <div class="col-sm-5">
+                        <a class="btn btn-danger form-control" th:href="@{/books}">Отменить</a>
+                    </div>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+<th:block th:replace="~{layout/fragment-footer.html :: footer-fragment}"></th:block>
+
+</body>
+</html>

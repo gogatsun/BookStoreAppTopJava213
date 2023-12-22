@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>BungoSD - книжный магазин</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+
+    <header th:replace="~{layout/fragment-header.html :: header-fragment}"></header>
+
+    <div class="container-fluid col-sm-9 content">
+
+        <div class="row my-3 py-3">
+            <div class="col-sm-3">
+                <p class="h2">Книги</p>
+            </div>
+            <div class="col-sm-9 my-auto text-end">
+                <p class="h5">
+                    <a th:href="@{/books}" class="text-decoration-none text-secondary link-opacity-25-hover">
+                        Показать все...</a>
+                </p>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row row-cols-4">
+                <div th:each="book: ${books}" class="col-auto mb-4 ">
+                    <div class="card" style="width: 15rem; height: 31rem;">
+
+                        <div class="my-auto pe-3 ps-3 pt-3" th:if="${book.bookImageData != null}">
+                            <img th:src="@{'data:image/jpeg;base64,' + ${book.bookImageData}}"
+                                 class="card-img-top rounded" height="330px" alt="...">
+                        </div>
+                        <div class="my-auto pe-3 ps-3 pt-3" th:if="${book.bookImageData == null}">
+                            <img th:src="@{/img/defaultImage.jpg}"
+                                 class="card-img-top rounded" height="330px" alt="...">
+                        </div>
+
+                        <div class="card-body">
+                            <h6 class="card-title text-start">
+                                <a style="max-width: 200px;" class="text-decoration-none text-dark d-inline-block text-truncate"
+                                   th:href="@{'books/book-details/' + ${book.id}}">
+                                    [[${book.title}]]
+                                </a>
+                            </h6>
+                            <p class="card-text text-end">
+                                <span class="col-sm-10 " th:each="bookAuthor: ${book.getBookAuthorSet()}">
+                                    [[${bookAuthor.author.name.charAt(0) + '. ' + bookAuthor.author.surname}]]
+                                </span>
+                            </p>
+                            <div class="row">
+                                <div class="col my-auto">
+                                    <h5 th:text="*{book.price + ' &#8381;'}"
+                                        class="card-title text-center text-primary text-end"></h5>
+                                </div>
+                                <div class="col">
+                                    <p sec:authorize="hasRole('USER')" class="text-end my-auto">
+                                        <a th:href="@{'/order/buy/' + ${book.id}}"
+                                           class="btn btn-primary">Купить</a>
+                                    </p>
+                                    <p sec:authorize="isAnonymous()" class="text-end my-auto">
+                                        <a th:href="@{/login}" class="btn btn-primary">Купить</a>
+                                    </p>
+                                    <p sec:authorize="hasRole('ADMIN')" class="text-end my-auto">
+                                        <a href="#" class="btn btn-primary disabled">Купить</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="my-3 py-3 border-bottom"></div>
+
+
+        <div class="row my-3 py-3">
+            <div class="col-sm-3">
+                <p class="h3">Авторы</p>
+            </div>
+            <div class="col-sm-9 my-auto text-end">
+                <p class="h5">
+                    <a th:href="@{/authors}" class="text-decoration-none text-secondary link-opacity-25-hover">
+                        Показать все...</a>
+                </p>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row row-cols-4">
+                <div th:each="author: ${authors}" class="col-auto mb-4 ">
+                    <div class="card col col-sm-3 my-auto bg-body-secondary" style="width: 15rem;">
+                        <div class="card-body my-auto">
+                            <h5 class="card-text">[[${author.name}]]</h5>
+                            <h5 class="card-text">[[${author.surname}]]</h5>
+                            <p class="text-end my-auto">
+                                <a th:href="@{'/authors/author-books/' + ${author.id}}"
+                                   class="btn btn-outline-dark">Книги</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="my-3 py-3 border-bottom"></div>
+
+        <div class="row my-3 py-3">
+            <div class="col-sm-3">
+                <p class="h3">Книжные циклы</p>
+            </div>
+            <div class="col-sm-9 my-auto text-end">
+                <p class="h5">
+                    <a th:href="@{/series}" class="text-decoration-none text-secondary link-opacity-25-hover">
+                        Показать все...</a>
+                </p>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row row-cols-2">
+                <div th:each="cycle: ${series}" class="col-auto mb-2">
+                    <div class="card my-auto bg-body-secondary" style="width: 32rem; height: auto">
+                        <div class="card-body my-auto">
+                            <h4 class="card-title">[[${cycle.title}]]</h4>
+                            <h6 class="card-text py-3">[[${cycle.description}]]</h6>
+                            <p class="text-end my-auto">
+                                <a th:href="@{'/series/' + ${cycle.id}}" class="btn btn-outline-dark">Подробнее</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <th:block th:replace="~{layout/fragment-footer.html :: footer-fragment}"></th:block>
+
+</body>
+</html>

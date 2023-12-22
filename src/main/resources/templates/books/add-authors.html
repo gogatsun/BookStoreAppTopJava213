@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Редактирование книги</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<header th:replace="~{layout/fragment-header.html :: header-fragment(page='books')}"></header>
+
+<div class="container-fluid content">
+
+    <div class="container col-sm-9">
+        <div class="mb-3 row"></div>
+        <figure class="text-center">
+            <blockquote class="blockquote">
+                <p>Книга — великая вещь, пока человек умеет ею пользоваться.</p>
+            </blockquote>
+            <figcaption class="blockquote-footer">
+                <cite title="Source Title">Александр Блок</cite>
+            </figcaption>
+        </figure>
+    </div>
+
+    <th:block th:replace="~{layout/fragment-message.html :: ft-message}"></th:block>
+
+    <div class="container-sm col-sm-9">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/}">Главная</a></li>
+                <li class="breadcrumb-item" aria-current="page"><a th:href="@{/books}">Книги</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Добавление автора и жанра</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="container-sm col-sm-9">
+        <div class="row">
+            <div class="col-sm-11 my-auto"></div>
+            <div class="text-start col-sm-1">
+                <p>
+                    <a class="btn btn-outline-secondary" th:href="@{/books}">
+                        <img th:src="@{/img/arrow_left_icon.svg}" width="32" height="32" alt="назад">
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container-md col-sm-9">
+        <div th:object="${updateBook}">
+
+            <div hidden="hidden">
+                <div class="col-sm-10">
+                    <span class="form-control">[[${updateBook.id}]]</span>
+                </div>
+            </div>
+
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label text-end">
+                    Название:
+                </label>
+                <div class="col-sm-10">
+                    <span class="form-control">[[${updateBook.title}]]</span>
+                </div>
+            </div>
+
+
+            <div class="mb-3 row" th:each="bookAuthor: ${updateBook.getBookAuthorSet()}">
+                <label class="col-sm-2 col-form-label text-end" for="author">
+                    Автор:
+                </label>
+                <div class="col-sm-8">
+                    <span class="form-control"
+                       th:text="${bookAuthor.author.name.charAt(0) + '. ' + bookAuthor.author.surname}">
+                    </span>
+                </div>
+                <div class="col-sm-2">
+                    <a th:href="@{'/books/' + ${updateBook.id} + '/delete-author/' + ${bookAuthor.id}}"
+                       class="btn btn-danger form-control">Удалить</a>
+                </div>
+            </div>
+
+            <form method="post" th:action="@{'/books/' + ${updateBook.id} + '/add-authors'}"
+                      th:object="${bookAuthors}">
+                <div class="mb-3 row">
+                    <div class="col-sm-2"></div>
+                    <input hidden aria-label="book" th:field="*{id}" th:value="0"/>
+                    <div class="col-sm-8">
+                        <select required class="form-select bg-success-subtle" id="author" th:field="*{author}">
+                            <option selected readonly hidden value="">Выберите автора</option>
+                            <option th:each="author: ${authors}" th:value="${author.id}">
+                                [[${author.surname} + ' ' + ${author.name} + ' ' + ${author.patronymic}]]
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <button class="btn btn-success form-control">Добавить</button>
+                    </div>
+                </div>
+            </form>
+
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label text-end">
+                    Издательство:
+                </label>
+                <div class="col-sm-10">
+                    <span class="form-control" th:text="${updateBook.publisher.title}"></span>
+                </div>
+            </div>
+
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label text-end">
+                    Цикл:
+                </label>
+                <div class="col-sm-10">
+                    <span class="form-control" th:if="${updateBook.series != null}" th:text="${updateBook.series.title}"></span>
+                    <span class="form-control" th:if="${updateBook.series == null}">Отсутствует</span>
+                </div>
+            </div>
+
+
+            <div class="mb-3 row" th:each="bookGenre: ${updateBook.bookGenreSet}">
+                <label class="col-sm-2 col-form-label text-end" for="author">
+                    Жанр:
+                </label>
+                <div class="col-sm-8">
+                    <span class="form-control"
+                          th:text="${bookGenre.genre.title}">
+                    </span>
+                </div>
+                <div class="col-sm-2">
+                    <a th:href="@{'/books/' + ${updateBook.id} + '/delete-genre/' + ${bookGenre.id}}"
+                       class="btn btn-danger form-control">Удалить</a>
+                </div>
+            </div>
+
+            <form method="post" th:action="@{'/books/' + ${updateBook.id} + '/add-genres'}"
+                  th:object="${bookGenres}">
+                <div class="mb-3 row">
+                    <div class="col-sm-2"></div>
+                    <input hidden aria-label="book" th:field="*{id}" th:value="0"/>
+                    <div class="col-sm-8">
+                        <select aria-label="genre" class="form-select bg-success-subtle" id="genre" th:field="*{genre}">
+                            <option selected readonly hidden value="">Выберите жанр</option>
+                            <option th:each="genre: ${genres}" th:value="${genre.getId()}">
+                                [[${genre.title}]]
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <button class="btn btn-success form-control">Добавить</button>
+                    </div>
+                </div>
+            </form>
+
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label text-end">
+                    Цена:
+                </label>
+                <div class="col-sm-10">
+                    <span class="form-control" th:text="${updateBook.price} + ' &#8381;'"></span>
+                </div>
+            </div>
+
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label text-end">
+                    Год издания:
+                </label>
+                <div class="col-sm-10">
+                    <span class="form-control" th:text="${updateBook.publicationDate}"></span>
+                </div>
+            </div>
+
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label text-end" for="description">
+                    Описание:
+                </label>
+                <div class="col-sm-10">
+                    <textarea readonly class="form-control" rows="6" th:field="*{description}"
+                              id="description" required></textarea>
+                </div>
+            </div>
+
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label text-end">
+                    ISBN:
+                </label>
+                <div class="col-sm-10">
+                    <span class="form-control" th:text="${updateBook.isbn}"></span>
+                </div>
+            </div>
+
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label text-end">
+                    Количество страниц:
+                </label>
+                <div class="col-sm-10">
+                    <span class="form-control" th:text="${updateBook.pageCount}"></span>
+                </div>
+            </div>
+
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label text-end">
+                    Тип обложки:
+                </label>
+                <div class="col-sm-10">
+                    <span class="form-control" th:text="${updateBook.coverType.title}"></span>
+                </div>
+            </div>
+
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label text-end">
+                    Тираж:
+                </label>
+                <div class="col-sm-10">
+                    <span class="form-control" th:text="${updateBook.edition}"></span>
+                </div>
+            </div>
+
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label text-end">
+                    Вес, г.:
+                </label>
+                <div class="col-sm-10">
+                    <span class="form-control" th:text="${updateBook.weight}"></span>
+                </div>
+            </div>
+
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label text-end">
+                    Возрастное ограничение:
+                </label>
+                <div class="col-sm-10 my-auto">
+                    <span class="form-control" th:text="${updateBook.ageLimit.title}"></span>
+                </div>
+            </div>
+
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label text-end">
+                    Количество на складе:
+                </label>
+                <div class="col-sm-10 my-auto">
+                    <span class="form-control" th:text="${updateBook.quantity}"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="~{layout/fragment-footer.html :: footer-fragment}"></th:block>
+
+</body>
+</html>

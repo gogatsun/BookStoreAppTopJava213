@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Авторы</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+
+    <header th:fragment="header-fragment">
+
+        <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+        <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+
+        <div class="my-3 py-4"></div>
+        <div class="bg-body-secondary fixed-top py-1">
+            <div class="container col-sm-9">
+                <nav class=" navbar navbar-expand-lg ">
+                    <div class="container-fluid">
+                        <a class="navbar-brand"
+                           th:href="@{'/'}">BungoSD</a>
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                                aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                <li class="nav-item">
+                                    <a class="nav-link" th:href="@{/books}" aria-current="page"
+                                       th:classappend="${page == 'books'? 'active' : ''}">Книги
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" th:href="@{/authors}"
+                                       th:classappend="${page == 'authors' ? 'active' : ''}" >
+                                        Авторы
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" th:href="@{/publishers}"
+                                       th:classappend="${page == 'publishers'? 'active' : ''}" >
+                                        Издательства
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" th:href="@{/series}"
+                                       th:classappend="${page == 'series'? 'active' : ''}" >
+                                        Циклы
+                                    </a>
+                                </li>
+                            </ul>
+
+                            <div sec:authorize="hasRole('ADMIN')" class="nav-item dropdown ms-1 me-2">
+                                <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Администрирование
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" th:href="@{/books/new-book}">Добавить книгу</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" th:href="@{/authors/new-author}">Добавить автора</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" th:href="@{/series/new-series}">Добавить цикл</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" th:href="@{/publishers/new-publisher}">Добавить издательство</a></li>
+                                </ul>
+                            </div>
+
+                            <a sec:authorize="hasRole('USER')" class="ms-1 btn" th:href="@{/order}">
+                                <img th:src="@{/img/shopping_icon.svg}" width="32" height="32" alt="">
+                            </a>
+
+                            <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post">
+                                <button title="logout" class="btn ms-1">
+                                    <img th:src="@{/img/logout_icon.svg}" width="32" height="32" alt="">
+                                </button>
+                            </form>
+
+                            <form method="get" sec:authorize="!isAuthenticated()" th:action="@{/login}">
+                                <button title="login" class="btn ms-1">
+                                    <img th:src="@{/img/me_icon.svg}" width="32" height="32" alt="">
+                                </button>
+                            </form>
+
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+
+
+
+</body>
+</html>

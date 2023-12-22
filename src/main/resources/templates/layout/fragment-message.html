@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Message</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+
+        <div th:fragment="ft-message">
+            <p class="alert alert-success container-md col-sm-9 text-end" th:if="${successMessage != null}">
+                [[${successMessage}]]
+            </p>
+            <p class="alert alert-danger container-md col-sm-9 text-end" th:if="${dangerMessage != null}">
+                [[${dangerMessage}]]
+            </p>
+        </div>
+
+</body>
+</html>
